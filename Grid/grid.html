@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Grid</title>
+</head>
+<body>
+	<div id="board"></div>
+<script>
+	let board = document.getElementById("board");
+	let header = document.getElementById("header");
+	let boardWidth = 1000;
+	let row = prompt("Please choose your row size.");
+	let col = prompt("Please choose your column size.");
+	let numBoard = [];
+
+	function rand(min, max) {
+		return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	function drawBoard() {
+		board.innerHTML = "";
+		for (let i = 0; i < row; i++) {
+			addHeader(col, i);
+		} 
+		for (let i = 0; i < row; i++) {
+			numBoard[i] = Array(col);
+			for (let j = 0; j < col; j++) {
+				val = rand(1,1000);
+				numBoard[i][j] = val;
+				addCells(i, j, col, val);
+			}
+		}
+	}
+	function addHeader(size, val) {
+		let cell = document.createElement("div");
+		cell.style.background = "#71A1F3";
+		cell.style.width = (boardWidth / size) - 2 + "px";
+		cell.style.height = (boardWidth / size) - 2 + "px";
+		cell.style.border = "1px solid #000";
+		cell.style.position   = "absolute";
+		cell.style.left = val * (boardWidth / size) +"px",
+		cell.style.fontSize   = 30 + "px";
+      	cell.style.lineHeight = (boardWidth / size) - 15 +"px";
+      	cell.style.textAlign  = "center"; 
+      	board.appendChild(cell);
+      	cell.setAttribute("id", val);
+      	cell.innerHTML = val+"";
+      	cell.addEventListener("click", cellClicked, false);
+	}
+
+	function addCells(i, j, col, val) {
+		let cell = document.createElement("div");
+		cell.style.background = "#71A1F3";
+		cell.style.width = (boardWidth / col) - 2 + "px";
+		cell.style.height = (boardWidth / col) - 2 + "px";
+		cell.style.border = "1px solid #000";
+		cell.style.position   = "absolute";
+		cell.style.left = i * (boardWidth / col) +"px",
+      	cell.style.top = j * (boardWidth / col) +  (boardWidth / col) +"px",
+		cell.style.fontSize   = 30 + "px";
+      	cell.style.lineHeight = (boardWidth / col) - 15 +"px";
+      	cell.style.textAlign  = "center"; 
+      	board.appendChild(cell);
+      	cell.setAttribute("id", j+":"+i);
+      	cell.innerHTML = val;
+	}
+
+	function cellClicked(e) {
+		let sortArr = [];
+		let row = e.target.innerHTML;
+		console.log(numBoard);
+		for(let i = 0; i < col; i++) {
+			sortArr.push(numBoard[Number(row)][i]);
+		}
+		let sortedArr = sortArr.sort(function(a,b) {
+			return a > b ? 1 : -1;
+		});
+		console.log(sortArr);
+		for (let i = 0; i < sortedArr.length; i++) {
+			let cell = document.getElementById(i + ":" + row);
+			//console.log(sortArr[i]);
+			cell.innerHTML = sortedArr[i];
+		}
+	}
+
+	drawBoard();
+</script>
+
+<style>
+	div {
+		max-width: 100vh;
+		font-size: 10px;
+	}
+</style>
+
+</body>
+</html>

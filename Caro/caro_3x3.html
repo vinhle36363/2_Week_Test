@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Caro</title>
+</head>
+<body>
+	<div id="board"></div>
+	<button id="reset">Reset</button>
+<script>
+	let board = document.getElementById("board");
+	let currentPlayer = 0; // 0 - O, 1 - X
+	let isWin = 0;
+	let boardWidth = 600;
+	let boardSize = 3;
+	let winCondi = 3;
+	let gameBoard = [];
+	let resetButton = document.getElementById("reset");
+
+	function drawBoard() {
+		board.innerHTML = "";
+		let cellIndex = 0;
+		for (let i = 0; i < boardSize; i++) {
+			for (let j = 0; j < boardSize; j++) {
+				addCells(i, j, boardSize, cellIndex);
+				gameBoard.push(cellIndex);
+				cellIndex++;
+			}
+		}
+	}
+
+	function addCells(col, row, size, cellIndex) {
+		let cell = document.createElement("div");
+		cell.setAttribute("id", cellIndex);
+		cell.style.background = "#71A1F3";
+		cell.style.width = (boardWidth / size) - 2 + "px";
+		cell.style.height = (boardWidth / size) - 2 + "px";
+		cell.style.border = "1px solid #000";
+		cell.style.position   = "absolute";
+		cell.style.left = col * (boardWidth / size) +"px",
+      	cell.style.top = row * (boardWidth / size) +"px",
+		cell.style.fontSize   = (boardWidth / size) - 20 +"px";
+      	cell.style.lineHeight = (boardWidth / size) - 15 +"px";
+      	cell.style.textAlign  = "center"; 
+      	board.appendChild(cell);
+		cell.addEventListener("click", cellClicked, false);
+	}
+
+	function cellClicked(e) {
+		let clickedCell = e.target;
+		if (currentPlayer == 0) {
+			currentPlayer = 1;
+		} else {
+			currentPlayer = 0;
+		}
+		clickedCell.innerHTML = currentPlayer == 0 ? "O" : "X";
+		gameBoard[gameBoard.indexOf(Number(clickedCell.id))] = clickedCell.innerHTML;
+		clickedCell.removeEventListener("click", cellClicked);
+		if(isWinning(clickedCell.id)) {
+			if (currentPlayer == 0) {
+				alert("O is the winner!");
+				location.reload();
+			} else {
+				alert("X is the winner!");
+				location.reload();
+			}
+		}
+	}
+
+	function isWinning() {
+		if (checkCross() || checkRow() || checkCol()) {
+			return true;
+		}
+	}
+
+	function checkCross() {
+		// Hang Cheo
+		for (let i = Number(boardSize)+1; i < boardSize*boardSize; i+= Number(boardSize)+1) {
+			if (gameBoard[0] == gameBoard[i]) {
+				counter++
+			} else {
+				counter = 1;
+			} 
+		}
+		if (counter == winCondi) {
+			console.log("cheo")
+			return true;
+		}
+		counter = 1;
+		
+		for (let i = 4 ; i < boardSize*boardSize; i+=2) {
+			if (gameBoard[2] == gameBoard[i]) {
+				counter++;
+				if (counter == winCondi) {
+					console.log("cheo")
+					return true;
+				}
+			}  else {
+				counter = 1;	
+			} 
+		}
+		counter = 1;
+	}
+
+	function checkRow() {
+		//Hang Ngang
+		for (let i = 0; i < boardSize; i++) {
+			for (let j = Number(boardSize); j < (boardSize * boardSize); j+=Number(boardSize)) {
+				if (gameBoard[i] == gameBoard[i+j]) {
+					counter++;
+					if (counter == winCondi) {
+						console.log("Ngang");
+						return true;
+					}
+				} else {
+					counter = 1;
+				}
+			}
+			counter = 1;
+		}
+		return false;
+	}
+
+	function checkCol() {
+		// Hang Doc
+		for (let i = 0; i < boardSize*boardSize; i+=boardSize) {
+			console.log(gameBoard[i]);
+			console.log(gameBoard[i+1])
+			console.log(gameBoard[i+2])
+			if (gameBoard[i] == gameBoard[i+1] &&
+				gameBoard[i] == gameBoard[i+2]) {
+				console.log("Doc");
+				return true;
+			}
+		}
+	}
+
+	resetButton.addEventListener("click", function() {
+		location.reload();
+	});
+
+	drawBoard();
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+  }
+
+  #board {
+  	background : #FFFFFF;
+    width      : 600px;
+    height     : 600px;
+    border     : 3px solid #000000;
+    position   : absolute;
+    left       : 10px;
+    top        : 70px;
+  }
+</style>
+
+</body>
+</html>

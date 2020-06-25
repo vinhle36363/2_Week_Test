@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Caro</title>
+</head>
+<body>
+	<div id="board"></div>
+	<button id="reset">Reset</button>
+<script>
+	let board = document.getElementById("board");
+	let currentPlayer = 0; // 0 - O, 1 - X
+	let isWin = 0;
+	let boardWidth = 600;
+	let boardSize = prompt("Please choose your board size.");
+	let winCondi = prompt("Please choose your winning condition.");;
+	let gameBoard = [];
+	let resetButton = document.getElementById("reset");
+
+	function drawBoard() {
+		board.innerHTML = "";
+		let cellIndex = 0;
+		for (let i = 0; i < boardSize; i++) {
+			gameBoard[i] = Array(boardSize);
+			for (let j = 0; j < boardSize; j++) {
+				addCells(i, j, boardSize, cellIndex);
+				gameBoard[i][j] = cellIndex;
+				cellIndex++;
+			}
+		}
+	}
+
+	function addCells(col, row, size, cellIndex) {
+		let cell = document.createElement("div");
+		cell.setAttribute("id", cellIndex);
+		cell.style.background = "#71A1F3";
+		cell.style.width = (boardWidth / size) - 2 + "px";
+		cell.style.height = (boardWidth / size) - 2 + "px";
+		cell.style.border = "1px solid #000";
+		cell.style.position   = "absolute";
+		cell.style.left = col * (boardWidth / size) +"px",
+      	cell.style.top = row * (boardWidth / size) +"px",
+		cell.style.fontSize   = (boardWidth / size) - 20 +"px";
+      	cell.style.lineHeight = (boardWidth / size) - 15 +"px";
+      	cell.style.textAlign  = "center"; 
+      	board.appendChild(cell);
+		cell.addEventListener("click", cellClicked, false);
+	}
+
+	function cellClicked(e) {
+		let clickedCell = e.target;
+		clickedCell.removeEventListener("click", cellClicked);
+		clickedCell.innerHTML = currentPlayer == 0 ? "X" : "O";
+		if (currentPlayer == 0) {
+			currentPlayer = 1;
+		} else {
+			currentPlayer = 0;
+		}
+		for(let i = 0; i < boardSize; i++) {
+			for (let j = 0; j < boardSize; j++) {
+				if (gameBoard[i][j] == Number(clickedCell.id)) {
+					gameBoard[i][j] = clickedCell.innerHTML;
+					if(isWinning(i, j, currentPlayer)) {
+						if (currentPlayer == 0) {
+							alert("O is the winner!");
+							location.reload();
+						} else {
+							alert("X is the winner!");
+							location.reload();
+						}
+					}
+				}
+			}
+		}
+		
+	}
+
+	function isWinning(col, row, player) {
+		if (checkCross(col, row, player) || checkRow(col) || checkCol(col)) {
+			return true;
+		}
+	}
+
+	function checkCross(col, row, player) {
+		let counterX = 1;
+		let counterO = 1;
+		// Hang Cheo
+		// Cheo Phai
+		for (let i = 0; i < boardSize; i++) {
+			if ((col - i) >= 0 && (row - i) >= 0) {
+				if (player == 0) {
+					counterX += boardSize[col][row] == boardSize[col-i][row-i] ? 1 : 0;
+				} else {
+					counterO += boardSize[col][row] == boardSize[col-i][row-i] ? 1 : 0;
+				}
+				
+			} else if ((col + i) < boardSize && (row + i) < boardSize) {
+				if (player == 0) {
+					counterX += boardSize[col][row] == boardSize[col+i][row+i] ? 1 : 0;
+				} else {
+					counterO += boardSize[col][row] == boardSize[col+i][row+i] ? 1 : 0;
+				}
+				
+			} 
+		}
+		if (counterX == winCondi || counterO == winCondi) {
+			return true;
+		} else {
+			counterX = 1;
+			counterO = 1;
+		}
+		// Cheo Trai
+		for (let i = 0; i < boardSize; i++) {
+			if ((col - i) >= 0 && (row + i) < boardSize) {
+				if (player == 1) {
+					counterX += boardSize[col][row] == boardSize[col-i][row+i] ? 1 : 0;
+				} else {
+					counterO += boardSize[col][row] == boardSize[col-i][row+i] ? 1 : 0;
+				}
+				
+			} else if ((col + i) < boardSize && (row - i) >= 0) {
+				if (player == 1) {
+					counterX += boardSize[col][row] == boardSize[col+i][row-i] ? 1 : 0;
+				} else {
+					counterO += boardSize[col][row] == boardSize[col+i][row-i] ? 1 : 0;
+				}
+				
+			}
+		}
+		if (counterX == winCondi || counterO == winCondi) {
+			return true;
+		} else {
+			counterX = 1;
+			counterO = 1;
+		}
+	}
+
+	function checkRow(id) {
+		//Hang Ngang
+		for (let i = 0; i < boardSize; i++) {
+			for (let j = Number(boardSize); j < (boardSize * boardSize); j+=Number(boardSize)) {
+				if (gameBoard[i] == gameBoard[i+j]) {
+					counter++;
+					if (counter == winCondi) {
+						console.log("Ngang");
+						return true;
+					}
+				} else {
+					counter = 1;
+				}
+			}
+			counter = 1;
+		}
+		return false;
+	}
+
+	function checkCol(id) {
+		// Hang Doc
+		for (let i = 0; i < boardSize*boardSize; i++) {
+			let col = 0;
+			if (col == Math.floor(i/boardSize) && gameBoard[i] == gameBoard[i+1]) {
+				counter++;
+				if (counter == winCondi) {
+					console.log("Doc");
+					return true;
+				}
+			} else {
+				col = Math.floor(i);
+				counter = 1;
+			}
+			
+		}
+		counter = 1;
+	}
+
+	resetButton.addEventListener("click", function() {
+		location.reload();
+	});
+
+	drawBoard();
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+  }
+
+  #board {
+  	background : #FFFFFF;
+    width      : 600px;
+    height     : 600px;
+    border     : 3px solid #000000;
+    position   : absolute;
+    left       : 10px;
+    top        : 70px;
+  }
+</style>
+
+</body>
+</html>

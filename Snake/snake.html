@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Snake</title>
+</head>
+<body>
+	<canvas id="board" width="400" height="400"></canvas>
+<script>
+	let canvas = document.getElementById('board');
+	let ctx = canvas.getContext('2d');
+	let last = 0;
+	let mode = prompt('Type A if snake die if it ate itself or hit the wall. Type B snake only die if it ate it self.');
+
+	let grid = 20;
+	let counter = 0;
+
+	let snake = {
+		x: 200,
+		y: 200,
+		dx: grid,
+		dy: 0,
+		cells: [],
+		maxCells: 1
+	};
+
+	let food = {
+		x: 60,
+		y: 60
+	};
+
+	function rand(min, max) {
+		return Math.floor(Math.random() * (max - min)) + min;
+	}
+
+	function gameRun() {
+
+		count = 0;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		snake.x += snake.dx;
+		snake.y += snake.dy;
+
+		if (mode === "A" || mode === "a") {
+			if (snake.x < 0) {
+				die();
+			} else if (snake.x >= canvas.width) {
+				die();
+			}
+			if (snake.y < 0) {
+				die();
+			} else if (snake.y >= canvas.height) {
+				die();
+			}
+		} else if (mode === "B" || mode === "b") {
+			if (snake.x < 0) {
+				snake.x = canvas.width - grid;
+			} else if (snake.x >= canvas.width) {
+				snake.x = 0;
+			}
+			if (snake.y < 0) {
+				snake.y = canvas.height - grid;
+			} else if (snake.y >= canvas.height) {
+				snake.y = 0
+			}
+		}
+		
+
+		snake.cells.unshift({x: snake.x, y: snake.y});
+
+		if(snake.cells.length > snake.maxCells) {
+			snake.cells.pop();
+		}
+
+		ctx.fillStyle = 'red';
+		ctx.fillRect(food.x, food.y, grid-1,grid-1);
+
+		ctx.fillStyle = 'green';
+		snake.cells.forEach(function(cell, index) {
+			ctx.fillRect(cell.x, cell.y,grid-1,grid-1);
+
+			if (cell.x === food.x && cell.y === food.y) {
+				snake.maxCells++;
+
+				food.x = rand(0, 20) * grid;
+				food.y = rand(0, 20) * grid;
+			}
+
+			for(let i = index + 1; i < snake.cells.length; i++) {
+				if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
+					die();
+				}
+			}
+		});
+	}
+
+	function die() {
+		snake.x = 200;
+        snake.y = 200;	
+        snake.cells = [];
+        snake.maxCells = 1;
+        snake.dx = grid;
+        snake.dy = 0;
+
+        food.x = rand(0, 20) * grid;
+        food.y = rand(0, 20) * grid;
+	}
+
+	document.addEventListener('keydown', function(e) {
+		if (e.which === 37 && snake.dx === 0) {
+			snake.dx = -grid;
+			snake.dy = 0;
+		} else if (e.which === 38 && snake.dy === 0) {
+			snake.dy =  -grid;
+			snake.dx = 0;
+		} else if (e.which === 39 && snake.dx === 0) {
+			snake.dx = grid;
+			snake.dy = 0;
+		} else if (e.which === 40 && snake.dy === 0) {
+			snake.dy = grid;
+			snake.dx = 0;
+		} 
+	});
+
+	setInterval(function() {gameRun();}, 300);
+</script>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  canvas {
+    border: 1px solid white;
+  }
+</body>
+</html>
