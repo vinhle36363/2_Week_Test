@@ -71,6 +71,9 @@
 		if (checkCrossLeftToRight(Number(col), Number(row), player)) {
 			return true;
 		}
+		//if (checkCrossRightToLeft(Number(col), Number(row), player)) {
+		//	return true;
+		//}
 	}
 
 	function checkCrossLeftToRight(col, row, player) {
@@ -81,23 +84,42 @@
 		for (let i = 1; i < boardSize; i++) {
 			if ((col - i) >= 0 && (row - i) >= 0) {
 				if (player == 0) {
-					counterX += gameBoard[col][row] == gameBoard[col-i][row-i] ? 1 : 0;
+					if (gameBoard[col-i][row-i] == "O") {
+						counterO++;
+					} else { 
+						break;
+					}
 				} else {
-					counterO += gameBoard[col][row] == gameBoard[col-i][row-i] ? 1 : 0;
+					if (gameBoard[col-i][row-i] == "X") {
+						counterX++;
+					} else {
+						break;
+					}
 				}
-				
-			} else if ((col + i) < boardSize && (row + i) < boardSize) {
+			} 
+			
+		}
+		for (let i = 1; i < boardSize; i++) {
+			if ((col + i) < boardSize && (row + i) < boardSize) {
 				if (player == 0) {
-					counterX += gameBoard[col][row] == gameBoard[col+i][row+i] ? 1 : 0;
-				} else {
-					counterO += gameBoard[col][row] == gameBoard[col+i][row+i] ? 1 : 0;
+					if (gameBoard[col+i][row+i] == "O") {
+						counterO++;
+					} else {
+						break;
+					}
+				} else { 
+					if (gameBoard[col+i][row+i] == "X") {
+						counterX++;
+					} else {
+						break;
+					}
 				}
-				
 			} 
 		}
 		console.log(counterX)
 		console.log(counterO)
-		if (counterX == winCondi || counterO == winCondi) {
+		if (counterX >= winCondi || counterO >= winCondi) {
+			console.log("cheo1")
 			return true;
 		} 
 	}
@@ -106,24 +128,24 @@
 		let counterX = 1;
 		let counterO = 1;
 		// Cheo Trai
-		for (let i = 0; i < boardSize; i++) {
+		for (let i = 1; i < boardSize; i++) {
 			if ((col - i) >= 0 && (row + i) < boardSize) {
-				if (player == 1) {
-					counterX += boardSize[col][row] == boardSize[col-i][row+i] ? 1 : 0;
+				if (player == 0) {
+					counterO += gameBoard[col][row] == gameBoard[col-i][row+i] ? 1 : counterO = 1;
 				} else {
-					counterO += boardSize[col][row] == boardSize[col-i][row+i] ? 1 : 0;
-				}
-					
-			} else if ((col + i) < boardSize && (row - i) >= 0) {
-				if (player == 1) {
-					counterX += boardSize[col][row] == boardSize[col+i][row-i] ? 1 : 0;
+					counterX += gameBoard[col][row] == gameBoard[col-i][row+i] ? 1 : counterX = 1;
+				}	
+			}
+			if ((col + i) < boardSize && (row - i) >= 0) {
+				if (player == 0) {
+					counterO += gameBoard[col][row] == gameBoard[col+i][row-i] ? 1 : counterO = 1;
 				} else {
-					counterO += boardSize[col][row] == boardSize[col+i][row-i] ? 1 : 0;
+					counterX += gameBoard[col][row] == gameBoard[col+i][row-i] ? 1 : counterX = 1;
 				}					
-			}
-			if (counterX == winCondi || counterO == winCondi) {
+			}	
+		}
+		if (counterX >= winCondi || counterO >= winCondi) {
 				return true;
-			}
 		}
 	}
 
