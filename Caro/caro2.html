@@ -19,20 +19,18 @@
 
 	function drawBoard() {
 		board.innerHTML = "";
-		let cellIndex = 0;
 		for (let i = 0; i < boardSize; i++) {
 			gameBoard[i] = Array(boardSize);
 			for (let j = 0; j < boardSize; j++) {
-				addCells(i, j, boardSize, cellIndex);
-				gameBoard[i][j] = cellIndex;
-				cellIndex++;
+				addCells(i, j, boardSize);
+				gameBoard[i][j] = "";
 			}
 		}
 	}
 
-	function addCells(col, row, size, cellIndex) {
+	function addCells(col, row, size) {
 		let cell = document.createElement("div");
-		cell.setAttribute("id", cellIndex);
+		cell.setAttribute("id", col + ":" + row);
 		cell.style.background = "#71A1F3";
 		cell.style.width = (boardWidth / size) - 2 + "px";
 		cell.style.height = (boardWidth / size) - 2 + "px";
@@ -49,66 +47,64 @@
 
 	function cellClicked(e) {
 		let clickedCell = e.target;
-		clickedCell.removeEventListener("click", cellClicked);
+		clickedCell.removeEventListener("click", cellClicked); 
 		clickedCell.innerHTML = currentPlayer == 0 ? "X" : "O";
 		if (currentPlayer == 0) {
 			currentPlayer = 1;
 		} else {
 			currentPlayer = 0;
 		}
-		for(let i = 0; i < boardSize; i++) {
-			for (let j = 0; j < boardSize; j++) {
-				if (gameBoard[i][j] == Number(clickedCell.id)) {
-					gameBoard[i][j] = clickedCell.innerHTML;
-					if(isWinning(i, j, currentPlayer)) {
-						if (currentPlayer == 0) {
-							alert("O is the winner!");
-							location.reload();
-						} else {
-							alert("X is the winner!");
-							location.reload();
-						}
-					}
-				}
+		let location = clickedCell.id.split(":");
+		gameBoard[location[0]][location[1]] = clickedCell.innerHTML;
+		if(isWinning(location[0], location[1], currentPlayer)) {
+			if (currentPlayer == 0) {
+				alert("O is the winner!");
+			} else {
+				alert("X is the winner!");
 			}
 		}
-		
+
+		console.log(gameBoard);
 	}
 
 	function isWinning(col, row, player) {
-		if (checkCross(col, row, player) || checkRow(col) || checkCol(col)) {
+		if (checkCrossLeftToRight(Number(col), Number(row), player)) {
 			return true;
 		}
 	}
 
-	function checkCross(col, row, player) {
+	function checkCrossLeftToRight(col, row, player) {
 		let counterX = 1;
 		let counterO = 1;
 		// Hang Cheo
 		// Cheo Phai
-		for (let i = 0; i < boardSize; i++) {
+		for (let i = 1; i < boardSize; i++) {
 			if ((col - i) >= 0 && (row - i) >= 0) {
 				if (player == 0) {
-					counterX += boardSize[col][row] == boardSize[col-i][row-i] ? 1 : 0;
+					counterX += gameBoard[col][row] == gameBoard[col-i][row-i] ? 1 : 0;
 				} else {
-					counterO += boardSize[col][row] == boardSize[col-i][row-i] ? 1 : 0;
+					counterO += gameBoard[col][row] == gameBoard[col-i][row-i] ? 1 : 0;
 				}
 				
 			} else if ((col + i) < boardSize && (row + i) < boardSize) {
 				if (player == 0) {
-					counterX += boardSize[col][row] == boardSize[col+i][row+i] ? 1 : 0;
+					counterX += gameBoard[col][row] == gameBoard[col+i][row+i] ? 1 : 0;
 				} else {
-					counterO += boardSize[col][row] == boardSize[col+i][row+i] ? 1 : 0;
+					counterO += gameBoard[col][row] == gameBoard[col+i][row+i] ? 1 : 0;
 				}
 				
 			} 
 		}
+		console.log(counterX)
+		console.log(counterO)
 		if (counterX == winCondi || counterO == winCondi) {
 			return true;
-		} else {
-			counterX = 1;
-			counterO = 1;
-		}
+		} 
+	}
+
+	function checkCrossRightToLeft(col, row, player) {
+		let counterX = 1;
+		let counterO = 1;
 		// Cheo Trai
 		for (let i = 0; i < boardSize; i++) {
 			if ((col - i) >= 0 && (row + i) < boardSize) {
@@ -117,21 +113,17 @@
 				} else {
 					counterO += boardSize[col][row] == boardSize[col-i][row+i] ? 1 : 0;
 				}
-				
+					
 			} else if ((col + i) < boardSize && (row - i) >= 0) {
 				if (player == 1) {
 					counterX += boardSize[col][row] == boardSize[col+i][row-i] ? 1 : 0;
 				} else {
 					counterO += boardSize[col][row] == boardSize[col+i][row-i] ? 1 : 0;
-				}
-				
+				}					
 			}
-		}
-		if (counterX == winCondi || counterO == winCondi) {
-			return true;
-		} else {
-			counterX = 1;
-			counterO = 1;
+			if (counterX == winCondi || counterO == winCondi) {
+				return true;
+			}
 		}
 	}
 
