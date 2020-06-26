@@ -59,12 +59,12 @@
 		if(isWinning(location[0], location[1], currentPlayer)) {
 			if (currentPlayer == 0) {
 				alert("O is the winner!");
+				resetButton.click();
 			} else {
 				alert("X is the winner!");
+				resetButton.click();
 			}
 		}
-
-		console.log(gameBoard);
 	}
 
 	function isWinning(col, row, player) {
