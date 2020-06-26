@@ -74,6 +74,9 @@
 		if (checkCrossRightToLeft(Number(col), Number(row), player)) {
 			return true;
 		}
+		if (checkRow(Number(col), Number(row), player)) {
+			return true;
+		}
 	}
 
 	function checkCrossLeftToRight(col, row, player) {
@@ -160,50 +163,98 @@
 				}					
 			}
 		}
-		console.log(counterX);
-		console.log(counterO);
 		if (counterX >= winCondi || counterO >= winCondi) {
 			console.log("cheo2")
 			return true;
 		}
 	}
 
-	function checkRow(id) {
+	function checkRow(col, row, player) {
+		let counterX = 1;
+		let counterO = 1;
 		//Hang Ngang
-		for (let i = 0; i < boardSize; i++) {
-			for (let j = Number(boardSize); j < (boardSize * boardSize); j+=Number(boardSize)) {
-				if (gameBoard[i] == gameBoard[i+j]) {
-					counter++;
-					if (counter == winCondi) {
-						console.log("Ngang");
-						return true;
+		for (let i = 1; i < boardSize; i++) {	
+			if (col + i < boardSize) {
+				if (player == 0) {
+					if (gameBoard[col+i][row] == "O") {
+						counterO++;
+					} else {
+						break;
 					}
 				} else {
-					counter = 1;
+					if (gameBoard[col+i][row] == "X") {
+						counterX++;
+					} else {
+						break;
+					}
+				}
+			} 
+		}
+		for (let i = 1; i < boardSize; i++) {
+			if (col - i >= 0) {
+				if (player == 0) {
+					if (gameBoard[col-i][row] == "O") {
+						counterO++;
+					} else {
+						break;
+					}
+				} else {
+					if (gameBoard[col-i][row] == "X") {
+						counterX++;
+					} else {
+						break;
+					}
 				}
 			}
-			counter = 1;
 		}
-		return false;
+		if (counterO >= winCondi || counterX >= winCondi) {
+			console.log("Ngang");
+			return true;
+		}
 	}
 
 	function checkCol(id) {
+		let counterX = 1;
+		let counterO = 1;
 		// Hang Doc
-		for (let i = 0; i < boardSize*boardSize; i++) {
-			let col = 0;
-			if (col == Math.floor(i/boardSize) && gameBoard[i] == gameBoard[i+1]) {
-				counter++;
-				if (counter == winCondi) {
-					console.log("Doc");
-					return true;
+		for (let i = 1; i < boardSize; i++) {
+			if (row + i < boardSize) {
+				if (player == 0) {
+					if (gameBoard[col][row+i] == "O") {
+						counterO++;
+					} else {
+						break;
+					}
+				} else {
+					if (gameBoard[col][row+i] == "X") {
+						counterX++;
+					} else {
+						break;
+					}
 				}
-			} else {
-				col = Math.floor(i);
-				counter = 1;
 			}
-			
 		}
-		counter = 1;
+		for (let i = 1; i < boardSize; i++) {
+			if (row - i >= 0) {
+				if (player == 0) {
+					if (gameBoard[col][row-i] == "O") {
+						counterO++;
+					} else {
+						break;
+					}
+				} else {
+					if (gameBoard[col][row-i] == "X") {
+						counterX++;
+					} else {
+						break;
+					}
+				}
+			}
+		}
+		if (counterO >= winCondi || counterX >= winCondi) {
+			console.log("Doc");
+			return true;
+		}
 	}
 
 	resetButton.addEventListener("click", function() {
