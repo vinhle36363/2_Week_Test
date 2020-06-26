@@ -71,9 +71,9 @@
 		if (checkCrossLeftToRight(Number(col), Number(row), player)) {
 			return true;
 		}
-		//if (checkCrossRightToLeft(Number(col), Number(row), player)) {
-		//	return true;
-		//}
+		if (checkCrossRightToLeft(Number(col), Number(row), player)) {
+			return true;
+		}
 	}
 
 	function checkCrossLeftToRight(col, row, player) {
@@ -116,8 +116,6 @@
 				}
 			} 
 		}
-		console.log(counterX)
-		console.log(counterO)
 		if (counterX >= winCondi || counterO >= winCondi) {
 			console.log("cheo1")
 			return true;
@@ -131,21 +129,42 @@
 		for (let i = 1; i < boardSize; i++) {
 			if ((col - i) >= 0 && (row + i) < boardSize) {
 				if (player == 0) {
-					counterO += gameBoard[col][row] == gameBoard[col-i][row+i] ? 1 : counterO = 1;
+					if (gameBoard[col-i][row+i] == "O") {
+						counterO++;
+					} else {
+						break;
+					}
 				} else {
-					counterX += gameBoard[col][row] == gameBoard[col-i][row+i] ? 1 : counterX = 1;
+					if (gameBoard[col-i][row+i] == "X") {
+						counterX++;
+					} else {
+						break;
+					}
 				}	
-			}
-			if ((col + i) < boardSize && (row - i) >= 0) {
-				if (player == 0) {
-					counterO += gameBoard[col][row] == gameBoard[col+i][row-i] ? 1 : counterO = 1;
-				} else {
-					counterX += gameBoard[col][row] == gameBoard[col+i][row-i] ? 1 : counterX = 1;
-				}					
 			}	
 		}
+		for (let i = 1; i < boardSize; i++) {
+			if ((col + i) < boardSize && (row - i) >= 0) {
+				if (player == 0) {
+					if (gameBoard[col+i][row-i] == "O") {
+						counterO++;
+					} else {
+						break;
+					}
+				} else {
+					if (gameBoard[col+i][row-i] == "X") {
+						counterX++;
+					} else {
+					 	break;
+					}
+				}					
+			}
+		}
+		console.log(counterX);
+		console.log(counterO);
 		if (counterX >= winCondi || counterO >= winCondi) {
-				return true;
+			console.log("cheo2")
+			return true;
 		}
 	}
 
