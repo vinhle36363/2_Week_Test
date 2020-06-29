@@ -9,9 +9,8 @@
 <script>
 	let board = document.getElementById("board");
 	let header = document.getElementById("header");
-	let boardWidth = 1000;
-	let row = prompt("Please choose your row size.");
 	let col = prompt("Please choose your column size.");
+	let row = prompt("Please choose your row size.");
 	let numBoard = [];
 
 	function rand(min, max) {
@@ -20,28 +19,54 @@
 
 	function drawBoard() {
 		board.innerHTML = "";
-		for (let i = 0; i < row; i++) {
+		let maxRow = 100;
+		let newRow = 0;
+		for (let i = 0; i < col; i++) {
 			addHeader(col, i);
-		} 
-		for (let i = 0; i < row; i++) {
+		}
+		for (let i = 0; i < col; i++) {
 			numBoard[i] = Array(col);
-			for (let j = 0; j < col; j++) {
+			for (let j = 0; j < row; j++) {
 				val = rand(1,1000);
 				numBoard[i][j] = val;
-				addCells(i, j, col, val);
+			}
+		}
+		if (row < maxRow) {
+			for (let i = 0; i < col; i++) {
+				for (let j = 0; j < row; j++) {
+					addCells(i, j, col, numBoard[i][j]);
+				}
+			}
+		} else { 
+			window.onscroll = function(ev) {
+    			if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+        			alert("you're at the bottom of the page");
+    			}
+			}
+			for (let i = 0; i < col; i++) {
+				for (let j = newRow; j < maxRow; j++) {
+					addCells(i, j, col, numBoard[i][j]);
+				}
+			}
+			newRow = maxRow;
+			if (row >= (maxRow + 100)) {
+				maxRow += 100;
+			} else {
+				maxRow += (row - maxRow);
 			}
 		}
 	}
+
 	function addHeader(size, val) {
 		let cell = document.createElement("div");
 		cell.style.background = "#71A1F3";
-		cell.style.width = (boardWidth / size) - 2 + "px";
-		cell.style.height = (boardWidth / size) - 2 + "px";
+		cell.style.width = 50 + "px";
+		cell.style.height = 50 + "px";
 		cell.style.border = "1px solid #000";
 		cell.style.position   = "absolute";
-		cell.style.left = val * (boardWidth / size) +"px",
+		cell.style.left = val * 50 +"px";
 		cell.style.fontSize   = 30 + "px";
-      	cell.style.lineHeight = (boardWidth / size) - 15 +"px";
+      	cell.style.lineHeight = 35 +"px";
       	cell.style.textAlign  = "center"; 
       	board.appendChild(cell);
       	cell.setAttribute("id", val);
@@ -52,14 +77,14 @@
 	function addCells(i, j, col, val) {
 		let cell = document.createElement("div");
 		cell.style.background = "#71A1F3";
-		cell.style.width = (boardWidth / col) - 2 + "px";
-		cell.style.height = (boardWidth / col) - 2 + "px";
+		cell.style.width = 50 + "px";
+		cell.style.height = 50 + "px";
 		cell.style.border = "1px solid #000";
 		cell.style.position   = "absolute";
-		cell.style.left = i * (boardWidth / col) +"px",
-      	cell.style.top = j * (boardWidth / col) +  (boardWidth / col) +"px",
+		cell.style.left = i * 50 +"px",
+      	cell.style.top = j * 50 + 50 +"px",
 		cell.style.fontSize   = 30 + "px";
-      	cell.style.lineHeight = (boardWidth / col) - 15 +"px";
+      	cell.style.lineHeight =  35 +"px";
       	cell.style.textAlign  = "center"; 
       	board.appendChild(cell);
       	cell.setAttribute("id", j+":"+i);
@@ -79,12 +104,16 @@
 		console.log(sortArr);
 		for (let i = 0; i < sortedArr.length; i++) {
 			let cell = document.getElementById(i + ":" + row);
-			//console.log(sortArr[i]);
 			cell.innerHTML = sortedArr[i];
 		}
 	}
 
 	drawBoard();
+	window.onscroll = function(ev) {
+    			if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        			alert("you're at the bottom of the page");
+    			}
+			}
 </script>
 
 <style>
