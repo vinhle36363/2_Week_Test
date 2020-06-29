@@ -38,11 +38,6 @@
 				}
 			}
 		} else { 
-			window.onscroll = function(ev) {
-    			if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-        			alert("you're at the bottom of the page");
-    			}
-			}
 			for (let i = 0; i < col; i++) {
 				for (let j = newRow; j < maxRow; j++) {
 					addCells(i, j, col, numBoard[i][j]);
@@ -54,6 +49,26 @@
 			} else {
 				maxRow += (row - maxRow);
 			}
+			infinityScroll(newRow, maxRow, 5052);
+		}
+	}
+
+	function infinityScroll(newRow, maxRow, bottom) {
+		window.onscroll = function(ev) {
+    		if ((window.innerHeight + window.scrollY) >= bottom) {
+        		for (let i = 0; i < col; i++) {
+					for (let j = newRow; j < maxRow; j++) {
+						addCells(i, j, col, numBoard[i][j]);
+					}
+				}
+				newRow = maxRow;
+				if (row >= (maxRow + 100)) {
+					maxRow += 100;
+				} else {
+					maxRow += (row - maxRow);
+				}
+				infinityScroll(newRow, maxRow, (bottom+4131));
+    		}
 		}
 	}
 
@@ -109,16 +124,14 @@
 	}
 
 	drawBoard();
-	window.onscroll = function(ev) {
-    			if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-        			alert("you're at the bottom of the page");
-    			}
-			}
 </script>
 
 <style>
+	body {
+		height: auto;
+	}
+
 	div {
-		max-width: 100vh;
 		font-size: 10px;
 	}
 </style>
